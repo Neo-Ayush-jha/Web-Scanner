@@ -38,7 +38,7 @@ This project is a web-based IP address and port scanner application built to pro
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/web-based-ip-scanner.git](https://github.com/your-username/web-based-ip-scanner.git)
+    git clone [https://github.com/Neo-Ayush-jha/Web-Scanner.git](https://github.com/Neo-Ayush-jha/Web-Scanner.git)
     cd web-based-ip-scanner
     ```
 
