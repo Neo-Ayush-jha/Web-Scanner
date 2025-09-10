@@ -77,7 +77,7 @@ Now, navigate to `http://127.0.0.1:8000/` in your browser to access the applicat
 ---
 
 ## 📂 Project Structure
-`
+``
     ipscanner/
     ├─ ipscanner/
     │  ├─ __init__.py
