@@ -77,28 +77,28 @@ Now, navigate to `http://127.0.0.1:8000/` in your browser to access the applicat
 ---
 
 ## 📂 Project Structure
-``
-ipscanner/
-├─ ipscanner/
-│  ├─ __init__.py
-│  ├─ settings.py
-│  ├─ celery.py
-│  ├─ urls.py
-│  └─ wsgi.py
-├─ scanner/
-│  ├─ migrations/
-│  ├─ templates/
-│  │  └─ scanner/
-│  │     └─ index.html
-│  ├─ static/
-│  ├─ models.py
-│  ├─ tasks.py
-│  ├─ views.py
-│  ├─ urls.py
-│  └─ admin.py
-├─ manage.py
-└─ requirements.txt
-``
+`
+    ipscanner/
+    ├─ ipscanner/
+    │  ├─ __init__.py
+    │  ├─ settings.py
+    │  ├─ celery.py
+    │  ├─ urls.py
+    │  └─ wsgi.py
+    ├─ scanner/
+    │  ├─ migrations/
+    │  ├─ templates/
+    │  │  └─ scanner/
+    │  │     └─ index.html
+    │  ├─ static/
+    │  ├─ models.py
+    │  ├─ tasks.py
+    │  ├─ views.py
+    │  ├─ urls.py
+    │  └─ admin.py
+    ├─ manage.py
+    └─ requirements.txt
+
 ---
 
 ## 💡 Contributing
