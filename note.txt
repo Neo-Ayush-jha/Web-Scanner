@@ -1,2 +1,3 @@
 Check ip=45.33.32.156
 celery -A ipscanner worker -l info --pool=solo                                      
+pip install -r requirements.txt
