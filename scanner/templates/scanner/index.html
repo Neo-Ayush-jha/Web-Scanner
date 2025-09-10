@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Web IP & Port Scanner</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body {
+        font-family: Arial;
+        margin: 20px;
+      }
+      input,
+      button {
+        padding: 8px;
+        margin: 6px;
+      }
+      table {
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px;
+      }
+      .open {
+        color: green;
+      }
+      .closed {
+        color: gray;
+      }
+      .filtered {
+        color: orange;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Web IP & Port Scanner</h1>
+
+    <div>
+      <label
+        >Target (IP or domain):
+        <input id="target" placeholder="example.com or 192.168.1.1" /></label
+      ><br />
+      <label
+        >Ports (range or comma):
+        <input
+          id="ports"
+          placeholder="1-1024 or 22,80,443"
+          value="1-1024" /></label
+      ><br />
+      <button id="startBtn">Start Scan</button>
+    </div>
+
+    <div id="statusArea" style="display: none; margin-top: 20px">
+      <h3>Scan status: <span id="scanStatus">—</span></h3>
+      <div id="resultArea"></div>
+      <button id="downloadBtn" style="display: none">Download CSV</button>
+    </div>
+
+    <script>
+      document
+        .getElementById("startBtn")
+        .addEventListener("click", async () => {
+          const target = document.getElementById("target").value.trim();
+          const ports =
+            document.getElementById("ports").value.trim() || "1-1024";
+          if (!target) {
+            alert("Enter a target");
+            return;
+          }
+
+          const resp = await fetch("/api/start_scan/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ target, ports }),
+          });
+          const data = await resp.json();
+          if (resp.ok) {
+            document.getElementById("statusArea").style.display = "block";
+            pollStatus(data.scan_db_id);
+          } else {
+            alert(JSON.stringify(data));
+          }
+        });
+
+      let pollInterval;
+      function pollStatus(scan_db_id) {
+        const statusEl = document.getElementById("scanStatus");
+        const resultArea = document.getElementById("resultArea");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        async function check() {
+          const r = await fetch(`/api/status/${scan_db_id}/`);
+          const j = await r.json();
+          statusEl.textContent = j.status;
+          // render results
+          if (j.results && j.results.length > 0) {
+            let html =
+              "<table><thead><tr><th>Port</th><th>State</th><th>Service</th></tr></thead><tbody>";
+            j.results.forEach((row) => {
+              html += `<tr><td>${row.port}</td><td class="${row.state}">${
+                row.state
+              }</td><td>${row.service || ""}</td></tr>`;
+            });
+            html += "</tbody></table>";
+            resultArea.innerHTML = html;
+          } else {
+            resultArea.innerHTML = "<em>No open ports found (yet)</em>";
+          }
+
+          if (j.status === "COMPLETED" || j.status === "FAILED") {
+            clearInterval(pollInterval);
+            downloadBtn.style.display = "inline-block";
+            downloadBtn.onclick = () =>
+              (window.location = `/api/export/${scan_db_id}/`);
+          }
+        }
+
+        check();
+        pollInterval = setInterval(check, 3000);
+      }
+    </script>
+  </body>
+</html>
