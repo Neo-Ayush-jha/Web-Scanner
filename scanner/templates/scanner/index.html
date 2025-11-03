@@ -1,100 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Web IP & Port Scanner</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <style>
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: Arial;
-        margin: 20px;
+        font-family: "Poppins", sans-serif;
+        background-color: #0a0a0a;
+        color: #f5f5f5;
+        margin: 0;
+        padding: 0;
       }
-      input,
+
+      header {
+        background: #111;
+        padding: 20px 40px;
+        border-bottom: 1px solid #222;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header h1 {
+        color: #00ffc6;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+      }
+
+      header a {
+        color: #ccc;
+        text-decoration: none;
+        margin-left: 20px;
+        transition: color 0.3s;
+      }
+
+      header a:hover {
+        color: #00ffc6;
+      }
+
+      main {
+        max-width: 700px;
+        margin: 60px auto;
+        background: #111;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(0, 255, 198, 0.08);
+      }
+
+      h2 {
+        text-align: center;
+        color: #00ffc6;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-top: 20px;
+        color: #ccc;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #333;
+        margin-top: 6px;
+        background: #1a1a1a;
+        color: #eee;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #00ffc6;
+      }
+
       button {
-        padding: 8px;
-        margin: 6px;
+        margin-top: 25px;
+        background: #00ffc6;
+        color: #000;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: 600;
+        width: 100%;
+        transition: background 0.3s, transform 0.2s;
       }
+
+      button:hover {
+        background: #00d4a3;
+        transform: scale(1.03);
+      }
+
+      #statusArea {
+        display: none;
+        margin-top: 30px;
+        background: #1a1a1a;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #222;
+      }
+
+      #scanStatus {
+        color: #00ffc6;
+        font-weight: 600;
+      }
+
       table {
+        width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        margin-top: 15px;
       }
+
       th,
       td {
-        border: 1px solid #ccc;
-        padding: 6px;
+        border: 1px solid #222;
+        padding: 8px 10px;
+        text-align: center;
       }
+
+      th {
+        background: #222;
+        color: #00ffc6;
+      }
+
       .open {
-        color: green;
+        color: #00ff7f;
+        font-weight: 600;
       }
+
       .closed {
-        color: gray;
+        color: #aaa;
       }
+
       .filtered {
         color: orange;
+      }
+
+      #downloadBtn {
+        display: none;
+        margin-top: 20px;
+        background: #00ffc6;
+        color: #000;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      #downloadBtn:hover {
+        background: #00d4a3;
+      }
+
+      .loading-dots {
+        display: inline-block;
+        font-weight: bold;
+        animation: blink 1.5s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        20% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.2;
+        }
+      }
+
+      footer {
+        text-align: center;
+        color: #888;
+        padding: 20px;
+        font-size: 0.9rem;
       }
     </style>
   </head>
   <body>
-    <h1>Web IP & Port Scanner</h1>
+    <header>
+      <h1>CyberTool Scanner</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/scanner/">Scanner</a>
+      </nav>
+    </header>
 
-    <div>
-      <label
-        >Target (IP or domain):
-        <input id="target" placeholder="example.com or 192.168.1.1" /></label
-      ><br />
-      <label
-        >Ports (range or comma):
-        <input
-          id="ports"
-          placeholder="1-1024 or 22,80,443"
-          value="1-1024" /></label
-      ><br />
-      <button id="startBtn">Start Scan</button>
-    </div>
+    <main>
+      <h2>Web IP & Port Scanner</h2>
 
-    <div id="statusArea" style="display: none; margin-top: 20px">
-      <h3>Scan status: <span id="scanStatus">—</span></h3>
-      <div id="resultArea"></div>
-      <button id="downloadBtn" style="display: none">Download CSV</button>
-    </div>
+      <label for="target">Target (IP or Domain)</label>
+      <input
+        id="target"
+        placeholder="example.com or 45.33.32.156"
+        autocomplete="off"
+      />
+
+      <label for="ports">Ports (Range or Comma-separated)</label>
+      <input
+        id="ports"
+        placeholder="1-1024 or 22,80,443"
+        value="1-1024"
+        autocomplete="off"
+      />
+
+      <button id="startBtn">🚀 Start Scan</button>
+
+      <div id="statusArea">
+        <h3>
+          Scan Status:
+          <span id="scanStatus">Waiting...</span>
+          <span class="loading-dots">...</span>
+        </h3>
+        <div id="resultArea"></div>
+        <button id="downloadBtn">⬇️ Download CSV</button>
+      </div>
+    </main>
+
+    <footer>© 2025 CyberTool Scanner. Built with Django & Celery.</footer>
 
     <script>
-      document
-        .getElementById("startBtn")
-        .addEventListener("click", async () => {
-          const target = document.getElementById("target").value.trim();
-          const ports =
-            document.getElementById("ports").value.trim() || "1-1024";
-          if (!target) {
-            alert("Enter a target");
-            return;
-          }
+      const startBtn = document.getElementById("startBtn");
+      const statusArea = document.getElementById("statusArea");
+      const statusEl = document.getElementById("scanStatus");
+      const resultArea = document.getElementById("resultArea");
+      const downloadBtn = document.getElementById("downloadBtn");
 
-          const resp = await fetch("/api/start_scan/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ target, ports }),
-          });
-          const data = await resp.json();
-          if (resp.ok) {
-            document.getElementById("statusArea").style.display = "block";
-            pollStatus(data.scan_db_id);
-          } else {
-            alert(JSON.stringify(data));
-          }
+      startBtn.addEventListener("click", async () => {
+        const target = document.getElementById("target").value.trim();
+        const ports = document.getElementById("ports").value.trim() || "1-1024";
+
+        if (!target) {
+          alert("⚠️ Please enter a valid target (IP or domain).");
+          return;
+        }
+
+        statusArea.style.display = "block";
+        statusEl.textContent = "Starting...";
+        resultArea.innerHTML = "<em>Initializing scan...</em>";
+
+        const resp = await fetch("/api/start_scan/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target, ports }),
         });
+        const data = await resp.json();
+        console.log("Scan started:", data);
+
+        if (resp.ok) {
+          pollStatus(data.scan_db_id);
+        } else {
+          alert("❌ Error: " + JSON.stringify(data));
+        }
+      });
 
       let pollInterval;
-      function pollStatus(scan_db_id) {
-        const statusEl = document.getElementById("scanStatus");
-        const resultArea = document.getElementById("resultArea");
-        const downloadBtn = document.getElementById("downloadBtn");
-
+      async function pollStatus(scan_db_id) {
         async function check() {
           const r = await fetch(`/api/status/${scan_db_id}/`);
           const j = await r.json();
           statusEl.textContent = j.status;
-          // render results
+
           if (j.results && j.results.length > 0) {
             let html =
               "<table><thead><tr><th>Port</th><th>State</th><th>Service</th></tr></thead><tbody>";
@@ -106,7 +280,8 @@
             html += "</tbody></table>";
             resultArea.innerHTML = html;
           } else {
-            resultArea.innerHTML = "<em>No open ports found (yet)</em>";
+            resultArea.innerHTML =
+              "<em>No open ports found yet — scanning in progress...</em>";
           }
 
           if (j.status === "COMPLETED" || j.status === "FAILED") {

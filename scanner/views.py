@@ -17,17 +17,12 @@ def start_scan(request):
     target = data.get('target')
     ports = data.get('ports','1-1024')
 
-    # basic validation (improve for IPv6/regex)
     if not target:
         return JsonResponse({'error':'target required'}, status=400)
 
-    # create a ScanTask record
     unique_task = str(uuid.uuid4())
     scan = ScanTask.objects.create(task_id=unique_task, target=target, port_range=ports, status='PENDING')
-    # enqueue Celery task
     async_result = run_scan.delay(scan.id)
-    # store the Celery task id (optional)
-    # return the local scan.id and unique_task
     return JsonResponse({'scan_db_id': scan.id, 'task_uuid': unique_task, 'celery_id': async_result.id})
 
 def scan_status(request, scan_id):
@@ -52,3 +47,5 @@ def export_csv(request, scan_id):
     resp['Content-Disposition'] = f'attachment; filename="scan_{scan_id}.csv"'
     return resp
 
+def home(request):
+    return render(request, 'scanner/home.html')

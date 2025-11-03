@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web IP & Port Scanner | CyberTool</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #0a0a0a;
+      color: #f5f5f5;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      color: #00ffc6;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      color: #ccc;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #00ffc6;
+    }
+
+    .hero {
+      height: 90vh;
+      background: linear-gradient(
+          rgba(0, 0, 0, 0.7),
+          rgba(0, 0, 0, 0.8)
+        ),
+        url("https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?auto=format&fit=crop&w=1920&q=80")
+          center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero h2 {
+      font-size: 2.8rem;
+      color: #00ffc6;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #eee;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .hero button {
+      background: #00ffc6;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .hero button:hover {
+      background: #00d4a3;
+      transform: scale(1.05);
+    }
+
+    .features {
+      padding: 60px 20px;
+      text-align: center;
+      background: #111;
+    }
+
+    .features h3 {
+      color: #00ffc6;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .feature {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 255, 198, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0, 255, 198, 0.15);
+    }
+
+    .feature h4 {
+      color: #00ffc6;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background: #0d0d0d;
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #222;
+      color: #888;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CyberTool Scanner</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/scanner/">Start Scan</a>
+      <a href="#features">Features</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Scan. Detect. Secure.</h2>
+    <p>
+      A powerful and easy-to-use web-based IP and Port Scanner that helps you
+      analyze network security instantly.
+    </p>
+    <button onclick="window.location.href='/scanner/'">Start Scanning</button>
+  </section>
+
+  <section class="features" id="features">
+    <h3>Key Features</h3>
+    <div class="feature-grid">
+      <div class="feature">
+        <h4>⚡ Fast Scanning</h4>
+        <p>
+          Uses async background tasks (Celery) to perform lightning-fast scans
+          on multiple ports.
+        </p>
+      </div>
+      <div class="feature">
+        <h4>📊 Real-Time Status</h4>
+        <p>
+          See scan progress and port results update automatically in real time.
+        </p>
+      </div>
+      <div class="feature">
+        <h4>📁 Export Reports</h4>
+        <p>
+          Export your scan results as CSV for offline analysis or record
+          keeping.
+        </p>
+      </div>
+      <div class="feature">
+        <h4>🔒 Safe & Secure</h4>
+        <p>
+          All operations are handled on your server — no external data sharing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 CyberTool Scanner. Built with Django & Celery.
+  </footer>
+</body>
+</html>

@@ -28,10 +28,8 @@ def run_scan(self, scan_id):
         scan.save()
         return {'error': f'nmap not found at {nmap_path}'}
 
-    # Optional: Use SYN scan if admin privileges (Windows requires Admin for -sS)
-    scan_type = '-sT'  # default TCP connect
+    scan_type = '-sT'  
     if sys.platform.startswith('win'):
-        # Check if admin rights (simplified check)
         try:
             import ctypes
             is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
@@ -41,7 +39,6 @@ def run_scan(self, scan_id):
             pass
 
     try:
-        # Run Nmap with XML output
         xml_out = subprocess.check_output(
             [nmap_path, scan_type, '-Pn', '-p', ports, '-oX', '-', target],
             text=True,
@@ -58,7 +55,6 @@ def run_scan(self, scan_id):
         scan.save()
         return {'error': 'unexpected error', 'details': str(e)}
 
-    # Parse XML output
     try:
         root = ET.fromstring(xml_out)
         for host in root.findall('host'):
@@ -72,7 +68,6 @@ def run_scan(self, scan_id):
                     service_el = port_el.find('service')
                     service = service_el.get('name') if service_el is not None else ''
 
-                    # Optional: store only open/filtered/closed ports
                     if state in ['open', 'filtered', 'closed']:
                         ScanResult.objects.create(
                             scan=scan,

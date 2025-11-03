@@ -7,7 +7,7 @@ class ScanResultInline(admin.TabularInline):
 
 @admin.register(ScanTask)
 class ScanTaskAdmin(admin.ModelAdmin):
-    list_display = ('id','task_id','target','status','start_time','end_time')
+    list_display = ('task_id','id','target','status','start_time','end_time')
     inlines = [ScanResultInline]
     search_fields = ('task_id','target','status')
     list_filter = ('status','start_time','end_time')
