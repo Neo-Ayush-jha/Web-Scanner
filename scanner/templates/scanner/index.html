@@ -271,11 +271,12 @@
 
           if (j.results && j.results.length > 0) {
             let html =
-              "<table><thead><tr><th>Port</th><th>State</th><th>Service</th></tr></thead><tbody>";
+              "<table><thead><tr><th>Port</th><th>State</th><th>Service</th><th>Description</th></tr></thead><tbody>";
             j.results.forEach((row) => {
               html += `<tr><td>${row.port}</td><td class="${row.state}">${
                 row.state
-              }</td><td>${row.service || ""}</td></tr>`;
+              }</td><td>${row.service || ""}</td> <td>${row.description || "N/A"}</td></tr>`;
+              
             });
             html += "</tbody></table>";
             resultArea.innerHTML = html;
