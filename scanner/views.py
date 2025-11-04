@@ -32,7 +32,17 @@ def scan_status(request, scan_id):
     results = list(scan.scanresult_set.values('port', 'state', 'service'))
 
     for r in results:
-        r['description'] = PORT_DETAILS.get(r['port'], "No description available for this port.")
+        port_info = PORT_DETAILS.get(r['port'], None)
+        if port_info:
+            r['name'] = port_info['name']
+            r['description'] = port_info['description']
+            r['risk_level'] = port_info['risk_level']
+            r['usage'] = port_info['usage']
+        else:
+            r['name'] = "Unknown Port"
+            r['description'] = "No detailed information found for this port."
+            r['risk_level'] = "Unknown"
+            r['usage'] = "N/A"
 
     return JsonResponse({
         'scan_db_id': scan.id,
@@ -42,18 +52,20 @@ def scan_status(request, scan_id):
         'start_time': scan.start_time,
         'end_time': scan.end_time
     })
-
 def export_csv(request, scan_id):
     scan = get_object_or_404(ScanTask, pk=scan_id)
     results = scan.scanresult_set.all().order_by('port')
 
-    lines = ['port,state,service,description']
+    lines = ['port,name,state,service,risk_level,description,usage']
     for r in results:
-        description = PORT_DETAILS.get(r.port, "No description available for this port.")
-        lines.append(f"{r.port},{r.state},{r.service or ''},{description}")
+        port_info = PORT_DETAILS.get(r.port, None)
+        if port_info:
+            lines.append(f"{r.port},{port_info['name']},{r.state},{r.service or ''},{port_info['risk_level']},{port_info['description']},{port_info['usage']}")
+        else:
+            lines.append(f"{r.port},Unknown,{r.state},{r.service or ''},Unknown,No description,N/A")
 
     resp = HttpResponse('\n'.join(lines), content_type='text/csv')
-    resp['Content-Disposition'] = f'attachment; filename="scan_{scan_id}.csv"'
+    resp['Content-Disposition'] = f'attachment; filename=\"scan_{scan_id}.csv\"'
     return resp
 
 def home(request):

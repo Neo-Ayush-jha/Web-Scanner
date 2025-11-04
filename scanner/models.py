@@ -1,6 +1,32 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    scan_count = models.PositiveIntegerField(default=0)
+    has_paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+    
+class PaymentRecord(models.Model):
+    STATUS_CHOICES = (
+        ('PENDING','Pending'),
+        ('SUCCESS','Success'),
+        ('FAILED','Failed'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    razorpay_order_id = models.CharField(max_length=255, unique=True)
+    razorpay_payment_id = models.CharField(max_length=255, blank=True, null=True)
+    razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=49.00)  # example price
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.razorpay_order_id} - {self.status}"
 class ScanTask(models.Model):
     STATUS_CHOICES = [
         ('PENDING','Pending'),

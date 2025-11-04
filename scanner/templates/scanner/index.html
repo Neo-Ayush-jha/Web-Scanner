@@ -2,8 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Web IP & Port Scanner</title>
+    <title>Web IP & Port Scanner | CyberTool</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
     <style>
       * {
         box-sizing: border-box;
@@ -18,33 +26,34 @@
       }
 
       header {
-        background: #111;
-        padding: 20px 40px;
-        border-bottom: 1px solid #222;
+        padding: 4px 50px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        background: #111;
+        border-bottom: 1px solid #222;
       }
 
       header h1 {
-        color: #00ffc6;
         font-size: 1.6rem;
+        color: #00ffc6;
         letter-spacing: 1px;
       }
 
-      header a {
+      header nav a {
         color: #ccc;
         text-decoration: none;
         margin-left: 20px;
         transition: color 0.3s;
+        font-weight: 500; /* ENHANCEMENT: Better link visibility */
       }
 
-      header a:hover {
+      header nav a:hover {
         color: #00ffc6;
       }
 
       main {
-        max-width: 700px;
+        max-width: 820px;
         margin: 60px auto;
         background: #111;
         padding: 40px;
@@ -62,21 +71,35 @@
         display: block;
         margin-top: 20px;
         color: #ccc;
+        font-weight: 600; /* ENHANCEMENT: More prominent labels */
       }
 
       input {
         width: 100%;
-        padding: 10px;
+        padding: 12px 15px; /* ENHANCEMENT: Increased padding */
         border-radius: 8px;
         border: 1px solid #333;
         margin-top: 6px;
         background: #1a1a1a;
         color: #eee;
+        font-size: 1rem; /* ENHANCEMENT: Better text size */
       }
 
       input:focus {
         outline: none;
         border-color: #00ffc6;
+      }
+
+      /* ENHANCEMENT: Error Message Area Style */
+      #messageArea {
+        color: #ff4d4d;
+        background: #331111;
+        border: 1px solid #552222;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 20px;
+        font-weight: 600;
+        display: none; /* Controlled by JS */
       }
 
       button {
@@ -89,12 +112,19 @@
         cursor: pointer;
         font-weight: 600;
         width: 100%;
-        transition: background 0.3s, transform 0.2s;
+        transition: background 0.3s, transform 0.2s, opacity 0.3s;
       }
 
-      button:hover {
+      button:hover:not(:disabled) {
+        /* ENHANCEMENT: Disable hover effect when button is disabled */
         background: #00d4a3;
         transform: scale(1.03);
+      }
+
+      button:disabled {
+        /* ENHANCEMENT: Disabled button style */
+        opacity: 0.6;
+        cursor: not-allowed;
       }
 
       #statusArea {
@@ -106,45 +136,66 @@
         border: 1px solid #222;
       }
 
+      /* ENHANCEMENT: Status Header Styling */
+      #statusArea h3 {
+        color: #ccc;
+        font-size: 1.1rem;
+        border-bottom: 1px solid #222;
+        padding-bottom: 10px;
+        margin-top: 0;
+      }
+
       #scanStatus {
         color: #00ffc6;
         font-weight: 600;
+        margin-left: 5px;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 15px;
+        font-size: 0.9rem; /* ENHANCEMENT: Smaller table font */
       }
 
       th,
       td {
         border: 1px solid #222;
-        padding: 8px 10px;
+        padding: 10px 8px; /* ENHANCEMENT: Adjusted padding */
         text-align: center;
+        vertical-align: top; /* ENHANCEMENT: Align content to top */
       }
 
       th {
         background: #222;
         color: #00ffc6;
+        font-weight: 700;
+        position: sticky; /* ENHANCEMENT: Sticky table header */
+        top: 0;
+        z-index: 10;
       }
 
+      /* ENHANCEMENT: Color coding states */
       .open {
-        color: #00ff7f;
+        color: #00ff7f; /* Green */
         font-weight: 600;
       }
 
       .closed {
-        color: #aaa;
+        color: #888; /* Gray/Subtle */
       }
 
       .filtered {
-        color: orange;
+        color: #ffaa00; /* Orange */
+      }
+
+      .failed {
+        color: #ff4d4d; /* Red */
       }
 
       #downloadBtn {
         display: none;
-        margin-top: 20px;
+        margin: 20px auto 0; /* ENHANCEMENT: Center button */
         background: #00ffc6;
         color: #000;
         border: none;
@@ -152,6 +203,7 @@
         border-radius: 30px;
         cursor: pointer;
         transition: background 0.3s;
+        width: auto; /* ENHANCEMENT: Auto width */
       }
 
       #downloadBtn:hover {
@@ -161,6 +213,7 @@
       .loading-dots {
         display: inline-block;
         font-weight: bold;
+        color: #00ffc6; /* ENHANCEMENT: Ensure color is consistent */
         animation: blink 1.5s infinite;
       }
 
@@ -187,15 +240,18 @@
   </head>
   <body>
     <header>
-      <h1>CyberTool Scanner</h1>
+      <h1><i class="fas fa-terminal"></i> CyberTool Scanner</h1>
       <nav>
-        <a href="/">Home</a>
-        <a href="/scanner/">Scanner</a>
+        <a href="/"><i class="fas fa-home"></i> Home</a>
+        <a href="/scanner/"><i class="fas fa-bolt"></i> Scanner</a>
+        <a href="#features"><i class="fas fa-gears"></i>Features</a>
       </nav>
     </header>
 
     <main>
-      <h2>Web IP & Port Scanner</h2>
+      <h2>Port & Service Enumeration</h2>
+
+      <div id="messageArea"></div>
 
       <label for="target">Target (IP or Domain)</label>
       <input
@@ -207,25 +263,33 @@
       <label for="ports">Ports (Range or Comma-separated)</label>
       <input
         id="ports"
-        placeholder="1-1024 or 22,80,443"
+        placeholder="1-1024 or 22,80,443,1433"
         value="1-1024"
         autocomplete="off"
       />
 
-      <button id="startBtn">🚀 Start Scan</button>
+      <button id="startBtn"><i class="fas fa-rocket"></i> Start Scan</button>
 
       <div id="statusArea">
         <h3>
-          Scan Status:
+          <i class="fas fa-network-wired"></i> Scan Status:
           <span id="scanStatus">Waiting...</span>
           <span class="loading-dots">...</span>
         </h3>
         <div id="resultArea"></div>
-        <button id="downloadBtn">⬇️ Download CSV</button>
+        <button id="downloadBtn">
+          <i class="fas fa-download"></i> Download CSV
+        </button>
       </div>
     </main>
 
-    <footer>© 2025 CyberTool Scanner. Built with Django & Celery.</footer>
+    <footer>
+      © 2025 CyberTool Scanner. Built with Django & Celery.
+      <br />
+      <small
+        >Note: Scanning is subject to rate-limits and usage policies.</small
+      >
+    </footer>
 
     <script>
       const startBtn = document.getElementById("startBtn");
@@ -233,67 +297,185 @@
       const statusEl = document.getElementById("scanStatus");
       const resultArea = document.getElementById("resultArea");
       const downloadBtn = document.getElementById("downloadBtn");
+      const messageArea = document.getElementById("messageArea"); // ENHANCEMENT: New element reference
+      const targetInput = document.getElementById("target");
+      const portsInput = document.getElementById("ports");
+
+      // ENHANCEMENT: Helper to display errors
+      function displayError(message) {
+        messageArea.textContent = "❌ " + message;
+        messageArea.style.display = "block";
+      }
+
+      function clearMessages() {
+        messageArea.style.display = "none";
+        messageArea.textContent = "";
+      }
 
       startBtn.addEventListener("click", async () => {
-        const target = document.getElementById("target").value.trim();
-        const ports = document.getElementById("ports").value.trim() || "1-1024";
+        clearMessages();
+        const target = targetInput.value.trim();
+        const ports = portsInput.value.trim() || "1-1024";
 
         if (!target) {
-          alert("⚠️ Please enter a valid target (IP or domain).");
+          displayError("Please enter a valid target (IP or domain).");
           return;
         }
 
+        // ENHANCEMENT: Disable button and show loading immediately
+        startBtn.disabled = true;
+        startBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Initializing...';
+
         statusArea.style.display = "block";
         statusEl.textContent = "Starting...";
-        resultArea.innerHTML = "<em>Initializing scan...</em>";
+        resultArea.innerHTML =
+          "<em>Initializing connection to backend scan worker...</em>";
+        downloadBtn.style.display = "none";
 
-        const resp = await fetch("/api/start_scan/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ target, ports }),
-        });
-        const data = await resp.json();
-        console.log("Scan started:", data);
+        try {
+          const resp = await fetch("/api/start_scan/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ target, ports }),
+          });
 
-        if (resp.ok) {
-          pollStatus(data.scan_db_id);
-        } else {
-          alert("❌ Error: " + JSON.stringify(data));
+          const data = await resp.json();
+          console.log("Scan started:", data);
+
+          if (resp.ok) {
+            pollStatus(data.scan_db_id);
+          } else {
+            // ENHANCEMENT: Handle API errors more gracefully
+            const errorMsg =
+              data.error || data.detail || "An unexpected API error occurred.";
+            displayError("Scan failed to start: " + errorMsg);
+            statusEl.textContent = "FAILED";
+            resultArea.innerHTML = "";
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-rocket"></i> Start Scan';
+          }
+        } catch (error) {
+          displayError("Network error: Could not reach the API server.");
+          statusEl.textContent = "FAILED";
+          resultArea.innerHTML = "";
+          startBtn.disabled = false;
+          startBtn.innerHTML = '<i class="fas fa-rocket"></i> Start Scan';
         }
       });
 
       let pollInterval;
+      // ENHANCEMENT: Define risk level colors for table rows
+      const RISK_COLORS = {
+        Critical: "color: #ff4d4d; font-weight: 700;",
+        High: "color: #ff7f4d; font-weight: 600;",
+        Medium: "color: #ffaa00;",
+        Low: "color: #00ff7f;",
+      };
+
       async function pollStatus(scan_db_id) {
+        // Clear any previous interval
+        if (pollInterval) clearInterval(pollInterval);
+
         async function check() {
-          const r = await fetch(`/api/status/${scan_db_id}/`);
-          const j = await r.json();
-          statusEl.textContent = j.status;
+          try {
+            const r = await fetch(`/api/status/${scan_db_id}/`);
+            if (!r.ok) {
+              throw new Error("Failed to fetch scan status.");
+            }
+            const j = await r.json();
+            statusEl.textContent = j.status;
 
-          if (j.results && j.results.length > 0) {
-            let html =
-              "<table><thead><tr><th>Port</th><th>State</th><th>Service</th><th>Description</th></tr></thead><tbody>";
-            j.results.forEach((row) => {
-              html += `<tr><td>${row.port}</td><td class="${row.state}">${
-                row.state
-              }</td><td>${row.service || ""}</td> <td>${row.description || "N/A"}</td></tr>`;
-              
-            });
-            html += "</tbody></table>";
-            resultArea.innerHTML = html;
-          } else {
-            resultArea.innerHTML =
-              "<em>No open ports found yet — scanning in progress...</em>";
-          }
+            // ENHANCEMENT: Conditional loading dots visibility
+            const loadingDots = document.querySelector(".loading-dots");
+            if (j.status === "COMPLETED" || j.status === "FAILED") {
+              loadingDots.style.display = "none";
+            } else {
+              loadingDots.style.display = "inline-block";
+            }
 
-          if (j.status === "COMPLETED" || j.status === "FAILED") {
+            if (j.results && j.results.length > 0) {
+              let html = `
+                <p style="color: #ccc; font-size: 0.9em; margin-bottom: 5px;">Results for **${
+                  j.target || "Target"
+                }**:</p>
+                <div style="max-height: 400px; overflow-y: auto;"> <table>
+                    <thead>
+                      <tr>
+                        <th>Port</th>
+                        <th>Name</th>
+                        <th>State</th>
+                        <th>Service</th>
+                        <th>Risk</th>
+                        <th style="text-align:left;">Description</th>
+                        <th style="text-align:left;">Usage</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+
+              j.results.forEach((row) => {
+                // ENHANCEMENT: Use class for state, use inline style for risk based on map
+                const riskStyle = RISK_COLORS[row.risk_level] || "color: #ccc;";
+                html += `
+                  <tr>
+                    <td>${row.port}</td>
+                    <td>${row.name}</td>
+                    <td class="${row.state.toLowerCase()}">${row.state}</td>
+                    <td>${row.service || "-"}</td>
+                    <td style="${riskStyle}">${row.risk_level}</td>
+                    <td style="text-align:left; max-width: 200px;">${
+                      row.description
+                    }</td>
+                    <td style="text-align:left; max-width: 200px;">${
+                      row.usage
+                    }</td>
+                  </tr>`;
+              });
+              html += "</tbody></table></div>"; // Close scrollable div and table
+              resultArea.innerHTML = html;
+            } else if (
+              j.status === "COMPLETED" &&
+              (!j.results || j.results.length === 0)
+            ) {
+              // ENHANCEMENT: Message for no open ports found
+              resultArea.innerHTML =
+                '<p style="color: #00ffc6; font-weight: 600;">✅ Scan complete. No open ports found in the specified range.</p>';
+            } else if (j.status === "FAILED") {
+              resultArea.innerHTML =
+                '<p style="color: #ff4d4d; font-weight: 600;">❌ Scan failed. Check the target or port range.</p>';
+            }
+
+            if (j.status === "COMPLETED" || j.status === "FAILED") {
+              clearInterval(pollInterval);
+              // ENHANCEMENT: Re-enable start button
+              startBtn.disabled = false;
+              startBtn.innerHTML = '<i class="fas fa-rocket"></i> Start Scan';
+
+              if (
+                j.status === "COMPLETED" &&
+                j.results &&
+                j.results.length > 0
+              ) {
+                downloadBtn.style.display = "inline-block";
+                downloadBtn.onclick = () =>
+                  (window.location = `/api/export/${scan_db_id}/`);
+              }
+            }
+          } catch (e) {
+            console.error("Polling error:", e);
             clearInterval(pollInterval);
-            downloadBtn.style.display = "inline-block";
-            downloadBtn.onclick = () =>
-              (window.location = `/api/export/${scan_db_id}/`);
+            statusEl.textContent = "ERROR";
+            resultArea.innerHTML =
+              '<p style="color: #ff4d4d; font-weight: 600;">A communication error occurred during status check.</p>';
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-rocket"></i> Start Scan';
+            const loadingDots = document.querySelector(".loading-dots");
+            loadingDots.style.display = "none";
           }
         }
 
         check();
+        // Start polling every 3 seconds
         pollInterval = setInterval(check, 3000);
       }
     </script>
