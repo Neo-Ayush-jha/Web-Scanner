@@ -183,8 +183,15 @@
         padding: 20px;
         font-size: 0.9rem;
       }
+
+      #ipDisplay {
+        margin-top: 10px;
+        color: #00ffc6;
+        font-weight: 500;
+      }
     </style>
   </head>
+
   <body>
     <header>
       <h1>CyberTool Scanner</h1>
@@ -198,19 +205,12 @@
       <h2>Web IP & Port Scanner</h2>
 
       <label for="target">Target (IP or Domain)</label>
-      <input
-        id="target"
-        placeholder="example.com or 45.33.32.156"
-        autocomplete="off"
-      />
+      <input id="target" placeholder="example.com or 45.33.32.156" autocomplete="off" />
+      <button id="resolveBtn">🌐 Resolve Domain to IP</button>
+      <div id="ipDisplay"></div>
 
       <label for="ports">Ports (Range or Comma-separated)</label>
-      <input
-        id="ports"
-        placeholder="1-1024 or 22,80,443"
-        value="1-1024"
-        autocomplete="off"
-      />
+      <input id="ports" placeholder="1-1024 or 22,80,443" value="1-1024" autocomplete="off" />
 
       <button id="startBtn">🚀 Start Scan</button>
 
@@ -229,11 +229,38 @@
 
     <script>
       const startBtn = document.getElementById("startBtn");
+      const resolveBtn = document.getElementById("resolveBtn");
+      const ipDisplay = document.getElementById("ipDisplay");
       const statusArea = document.getElementById("statusArea");
       const statusEl = document.getElementById("scanStatus");
       const resultArea = document.getElementById("resultArea");
       const downloadBtn = document.getElementById("downloadBtn");
 
+      // 🌐 Resolve domain to IP
+      resolveBtn.addEventListener("click", async () => {
+        const domain = document.getElementById("target").value.trim();
+        if (!domain) {
+          alert("⚠️ Please enter a domain name.");
+          return;
+        }
+
+        ipDisplay.textContent = "Resolving...";
+        const resp = await fetch("/api/resolve_domain/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ domain }),
+        });
+        const data = await resp.json();
+
+        if (resp.ok) {
+          ipDisplay.textContent = `✅ IP Address: ${data.ip_address}`;
+          document.getElementById("target").value = data.ip_address;
+        } else {
+          ipDisplay.textContent = `❌ ${data.error}`;
+        }
+      });
+
+      // 🚀 Start Scan
       startBtn.addEventListener("click", async () => {
         const target = document.getElementById("target").value.trim();
         const ports = document.getElementById("ports").value.trim() || "1-1024";
@@ -253,15 +280,12 @@
           body: JSON.stringify({ target, ports }),
         });
         const data = await resp.json();
-        console.log("Scan started:", data);
 
-        if (resp.ok) {
-          pollStatus(data.scan_db_id);
-        } else {
-          alert("❌ Error: " + JSON.stringify(data));
-        }
+        if (resp.ok) pollStatus(data.scan_db_id);
+        else alert("❌ Error: " + JSON.stringify(data));
       });
 
+      // Poll scan status
       let pollInterval;
       async function pollStatus(scan_db_id) {
         async function check() {
@@ -273,15 +297,12 @@
             let html =
               "<table><thead><tr><th>Port</th><th>State</th><th>Service</th></tr></thead><tbody>";
             j.results.forEach((row) => {
-              html += `<tr><td>${row.port}</td><td class="${row.state}">${
-                row.state
-              }</td><td>${row.service || ""}</td></tr>`;
+              html += `<tr><td>${row.port}</td><td class="${row.state}">${row.state}</td><td>${row.service || ""}</td></tr>`;
             });
             html += "</tbody></table>";
             resultArea.innerHTML = html;
           } else {
-            resultArea.innerHTML =
-              "<em>No open ports found yet — scanning in progress...</em>";
+            resultArea.innerHTML = "<em>No open ports yet — scanning...</em>";
           }
 
           if (j.status === "COMPLETED" || j.status === "FAILED") {

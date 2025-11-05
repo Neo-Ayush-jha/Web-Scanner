@@ -9,4 +9,5 @@ urlpatterns = [
     path('api/start_scan/', views.start_scan, name='start_scan'),
     path('api/status/<int:scan_id>/', views.scan_status, name='scan_status'),
     path('api/export/<int:scan_id>/', views.export_csv, name='export_csv'),
+    path('api/resolve_domain/', views.resolve_domain, name='resolve_domain'),
 ]
