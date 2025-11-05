@@ -148,11 +148,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
 
+LOGIN_URL = '/login/'
+
+
 GEMINI_API_KEY = "AIzaSyDbtsmJZjtUiXbIMxi9bPUcRghOw4DRpLk"
 
 
 # Razorpay keys (use environment variables in production)
-RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_your_key_here')
-RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET', 'rzp_test_secret_here')
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_RaveCVMev35dpb')
+RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET', '4P68oHGlURW80bzgqvOPAaTG')
 # optional webhook secret if using webhooks
 RAZORPAY_WEBHOOK_SECRET = os.environ.get('RAZORPAY_WEBHOOK_SECRET', '')

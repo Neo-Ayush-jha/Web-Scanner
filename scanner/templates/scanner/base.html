@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      {% block title %}Web IP & Port Scanner | CyberTool{% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <!-- Fonts & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <style>
+      /* ===========================
+         GLOBAL STYLES
+      =========================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #0a0a0a;
+        color: #f5f5f5;
+        line-height: 1.6;
+      }
+
+      /* ===========================
+         HEADER NAVIGATION
+      =========================== */
+      header {
+        padding: 20px 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #111;
+        border-bottom: 1px solid #222;
+      }
+
+      header h1 {
+        font-size: 1.6rem;
+        color: #00ffc6;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      nav a {
+        color: #ccc;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      nav a:hover {
+        color: #00ffc6;
+      }
+
+      nav a.active {
+        color: #00ffc6;
+        border-bottom: 2px solid #00ffc6;
+        padding-bottom: 2px;
+      }
+
+      /* ===========================
+         FOOTER
+      =========================== */
+      footer {
+        background: #0d0d0d;
+        text-align: center;
+        padding: 20px;
+        border-top: 1px solid #222;
+        color: #888;
+        font-size: 0.9rem;
+      }
+
+      footer small {
+        display: block;
+        color: #666;
+        margin-top: 5px;
+      }
+    </style>
+
+    {% block head_style %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- ===========================
+         HEADER SECTION
+    =========================== -->
+    <header>
+      <h1><i class="fas fa-terminal"></i> CyberTool Scanner</h1>
+      <nav>
+        <a
+          href="{% url 'home' %}"
+          class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+        >
+          <i class="fas fa-home"></i> Home
+        </a>
+
+        <a
+          href="{% url 'scanner' %}"
+          class="{% if request.resolver_match.url_name == 'scanner' %}active{% endif %}"
+        >
+          <i class="fas fa-bolt"></i> Scanner
+        </a>
+
+        {% if request.user.is_authenticated %}
+        <!-- ✅ Show only when user is logged in -->
+        <a
+          href="{% url 'make_payment' %}"
+          class="{% if request.resolver_match.url_name == 'make_payment' %}active{% endif %}"
+        >
+          <i class="fas fa-credit-card"></i> Payment
+        </a>
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+        {% else %}
+        <a
+          href="{% url 'register' %}"
+          class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}"
+        >
+          <i class="fas fa-user-plus"></i> Register
+        </a>
+
+        <a
+          href="{% url 'login' %}"
+          class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}"
+        >
+          <i class="fas fa-right-to-bracket"></i> Login
+        </a>
+        {% endif %}
+
+      </nav>
+    </header>
+
+    <!-- ===========================
+         PAGE CONTENT BLOCK
+    =========================== -->
+    {% block content %}
+    <main style="padding: 40px; text-align: center">
+      <h2 style="color: #00ffc6">Welcome to CyberTool</h2>
+      <p style="color: #ccc">
+        Use the navigation above to explore all sections.
+      </p>
+    </main>
+    {% endblock %}
+
+    <!-- ===========================
+         FOOTER
+    =========================== -->
+    <footer>
+      © 2025 CyberTool Scanner. Built with Django & Celery.
+      <small
+        >Note: Scanning is subject to rate-limits and usage policies.</small
+      >
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>
