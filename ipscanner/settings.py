@@ -142,7 +142,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'   # using django-celery-results
+CELERY_RESULT_BACKEND = 'django-db'  
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -152,7 +152,7 @@ CELERY_TIMEZONE = 'Asia/Kolkata'
 LOGIN_URL = '/login/'
 
 
-GEMINI_API_KEY = "AIzaSyDbtsmJZjtUiXbIMxi9bPUcRghOw4DRpLk"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 
 # Razorpay keys (use environment variables in production)
