@@ -53,11 +53,11 @@ def start_scan(request):
 
 #----------------- Free plan limit 3 scans----------
     
-    if (not profile.has_paid) and profile.scan_count >= 3:
-        return JsonResponse({
-            'error': 'Free scan limit reached. Payment required to continue.',
-            'payment_required': True
-        }, status=403)
+    # if (not profile.has_paid) and profile.scan_count >= 3:
+    #     return JsonResponse({
+    #         'error': 'Free scan limit reached. Payment required to continue.',
+    #         'payment_required': True
+    #     }, status=403)
 #----------------- Free plan limit 3 scans----------
 
     # Create scan task

@@ -132,6 +132,12 @@
 
         {% if request.user.is_authenticated %}
         <a
+          href="{% url 'web_dashboard' %}"
+          class="{% if request.resolver_match.url_name == 'make_payment' %}active{% endif %}"
+        >
+          <i class="fas fa-shield-alt"></i> Web Scan
+        </a>
+        <a
           href="{% url 'make_payment' %}"
           class="{% if request.resolver_match.url_name == 'make_payment' %}active{% endif %}"
         >

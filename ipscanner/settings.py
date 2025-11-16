@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'scanner',
+    'webscanner',
     # 'scanner.apps.ScannerConfig',
 ]
 

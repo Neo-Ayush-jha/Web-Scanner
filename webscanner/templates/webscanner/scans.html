@@ -1,0 +1,99 @@
+{% extends 'webscanner/base.html' %}
+{% block content %}
+<div class="glass p-4 rounded">
+    <h2 class="brand mb-3">Scans</h2>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left">
+                    <th class="py-2">ID</th>
+                    <th>Target</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for s in scans %}
+                <tr class="border-t border-slate-800">
+                    <td class="py-2">{{ s.id }}</td>
+
+                    <!-- FIXED: Django ORM access -->
+                    <td>{{ s.target.name }}</td>
+
+                    <td>{{ s.scan_type }}</td>
+                    <td>{{ s.status }}</td>
+
+                    <td>
+                        <div id="p{{ s.id }}">{{ s.progress }}%</div>
+                    </td>
+
+                    <td class="space-x-2">
+
+                        <!-- REPORT LINKS (Django URL system) -->
+                        <a class="px-2 py-1 border rounded hover-glow"
+                           href="{% url 'report' s.id %}?format=pdf">PDF</a>
+
+                        <a class="px-2 py-1 border rounded hover-glow"
+                           href="{% url 'report' s.id %}?format=html">HTML</a>
+
+                        <a class="px-2 py-1 border rounded hover-glow"
+                           href="{% url 'report' s.id %}?format=csv">CSV</a>
+
+                        <!-- Cancel scan -->
+                        {% if s.status == "queued" or s.status == "running" %}
+                        <form method="post" action="{% url 'scan_cancel' s.id %}" class="inline">
+                            {% csrf_token %}
+                            <button class="px-2 py-1 border rounded hover-glow">Cancel</button>
+                        </form>
+                        {% endif %}
+
+                        <!-- Log button -->
+                        <button class="px-2 py-1 border rounded hover-glow"
+                                onclick="openLog({{ s.id }})">Log</button>
+                    </td>
+                </tr>
+
+                <!-- LOG AREA -->
+                <tr id="log{{ s.id }}" class="hidden">
+                    <td colspan="6">
+                        <pre class="p-3 bg-black/40 rounded overflow-x-auto"
+                             id="logc{{ s.id }}"></pre>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<!-- JavaScript for auto refresh -->
+<script>
+    function poll() {
+        document.querySelectorAll('[id^=p]').forEach(async el => {
+            const id = el.id.substring(1);
+            const r = await fetch(`/webscanner/scan_status/${id}`);
+            if (r.ok) {
+                const j = await r.json();
+                el.textContent = `${j.progress}%`;
+            }
+        });
+        setTimeout(poll, 1500);
+    }
+    poll();
+
+    async function openLog(id){
+        const row = document.getElementById(`log${id}`);
+        row.classList.toggle('hidden');
+        if (!row.classList.contains('hidden')) {
+            const r = await fetch(`/webscanner/scan_log/${id}`);
+            const j = await r.json();
+            document.getElementById(`logc${id}`).textContent = j.log;
+        }
+    }
+</script>
+{% endblock %}

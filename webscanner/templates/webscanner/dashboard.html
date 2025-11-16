@@ -1,0 +1,88 @@
+{% extends 'webscanner/base.html' %}
+{% block content %}
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="glass p-4 rounded hover-glow">
+        <div class="text-sm opacity-70">Total Scans</div>
+        <div class="text-3xl brand">{{ stats.total_scans }}</div>
+    </div>
+
+    <div class="glass p-4 rounded hover-glow">
+        <div class="text-sm opacity-70">Total Vulnerabilities</div>
+        <div class="text-3xl brand">{{ stats.total_vulns }}</div>
+    </div>
+
+    <div class="glass p-4 rounded hover-glow">
+        <div class="text-sm opacity-70">Overall Risk</div>
+        <div class="text-3xl brand">{{ overall_risk }}</div>
+    </div>
+</div>
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    <div class="glass p-4 rounded">
+        <div class="mb-2">Vulnerabilities by Severity</div>
+        <canvas id="sevChart" height="150"></canvas>
+    </div>
+
+    <div class="glass p-4 rounded">
+        <div class="mb-2">Recent Scans</div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left">
+                        <th class="py-2">ID</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in latest_scans %}
+                    <tr class="border-t border-slate-800">
+                        <td class="py-2">{{ s.id }}</td>
+                        <td>{{ s.target.name }}</td>
+                        <td>{{ s.status }}</td>
+                        <td>{{ s.progress }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="glass p-4 rounded mt-4">
+    <div class="mb-2">Most Vulnerable Targets</div>
+    <ul class="list-disc pl-6">
+        {% for row in most_vulnerable %}
+        <li>{{ row.0.name }} — {{ row.1 }} issues</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+<script>
+    const ctx = document.getElementById('sevChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical','High','Medium','Low'],
+                datasets: [{
+                    data: [
+                        {{ stats.severity.Critical }},
+                        {{ stats.severity.High }},
+                        {{ stats.severity.Medium }},
+                        {{ stats.severity.Low }}
+                    ],
+                    backgroundColor: ['#ef4444','#f59e0b','#3b82f6','#10b981']
+                }]
+            },
+            options: { plugins: { legend: { labels: { color: '#e5e7eb' } } } }
+        });
+    }
+</script>
+
+{% endblock %}

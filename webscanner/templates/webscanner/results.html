@@ -1,0 +1,73 @@
+{% extends 'webscanner/base.html' %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-3">
+    <h2 class="brand">Results</h2>
+
+   <form method="get">
+    <select name="severity" class="px-3 py-2 bg-transparent border rounded"
+            onchange="this.form.submit()">
+
+        <option value="">All Severities</option>
+
+        {% for s in severity_list %}
+            <option value="{{ s }}"
+                {% if request.GET.severity == s %}selected{% endif %}>
+                {{ s }}
+            </option>
+        {% endfor %}
+
+    </select>
+</form>
+
+</div>
+
+<div class="glass p-4 rounded">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left">
+                    <th class="py-2">Type</th>
+                    <th>Severity</th>
+                    <th>URL</th>
+                    <th>Parameter</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for v in vulns %}
+                <tr class="border-t border-slate-800">
+                    <td class="py-2">{{ v.vtype }}</td>
+                    <td>{{ v.severity }}</td>
+                    <td>{{ v.url }}</td>
+                    <td>{{ v.parameter }}</td>
+                    <td>{{ v.status }}</td>
+
+                    <td>
+                        <details>
+                            <summary>View</summary>
+
+                            <div class="mt-2">
+                                <div class="text-xs opacity-70">Evidence</div>
+                                <pre class="p-2 bg-black/40 rounded overflow-x-auto">
+{{ v.evidence }}
+                                </pre>
+
+                                <div class="text-xs opacity-70 mt-2">Remediation</div>
+                                <pre class="p-2 bg-black/40 rounded overflow-x-auto">
+{{ v.remediation }}
+                                </pre>
+                            </div>
+                        </details>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+{% endblock %}
