@@ -5,6 +5,32 @@ import subprocess
 import xml.etree.ElementTree as ET
 import os
 import sys
+from urllib.parse import urlparse
+
+
+def extract_hostname(target: str) -> str:
+    """
+    Converts domain/URL/IP into a pure hostname or IP.
+    """
+    if not target:
+        return None
+
+    target = target.strip()
+
+    # Already an IPv4?
+    parts = target.split('.')
+    if len(parts) == 4 and all(p.isdigit() for p in parts):
+        return target
+
+    # Parse URL
+    parsed = urlparse(target if "://" in target else "http://" + target)
+
+    hostname = parsed.hostname
+    if hostname:
+        return hostname
+
+    return target
+
 
 @shared_task(bind=True)
 def run_scan(self, scan_id):

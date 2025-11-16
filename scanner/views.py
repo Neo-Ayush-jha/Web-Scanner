@@ -1,48 +1,87 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+import razorpay
+import uuid, json
 from .models import *
 from .tasks import run_scan
-import uuid
-import json
-from .port_info import PORT_DETAILS
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.conf import settings
-import razorpay
+from .port_info import PORT_DETAILS
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, get_object_or_404, redirect
 
+import socket
 
 def index(request):
     return render(request, 'scanner/index.html')
+
+import socket
+
+def resolve_to_ip(target):
+    try:
+        clean = target.replace("http://", "").replace("https://", "")
+        clean = clean.split("/")[0]
+        return socket.gethostbyname(clean)
+    except Exception:
+        return None
 
 @csrf_exempt
 @login_required
 def start_scan(request):
     if request.method != 'POST':
-        return JsonResponse({'error':'POST only'}, status=405)
-    data = json.loads(request.body.decode('utf-8'))
-    target = data.get('target')
-    ports = data.get('ports','1-1024')
+        return JsonResponse({'error': 'POST only'}, status=405)
 
-    if not target:
-        return JsonResponse({'error':'target required'}, status=400)
+    data = json.loads(request.body.decode('utf-8'))
+    target_input = data.get('target')
+    ports = data.get('ports', '1-1024')
+
+    if not target_input:
+        return JsonResponse({'error': 'Target required'}, status=400)
+
+    # Convert domain → IP before scan
+    target_ip = resolve_to_ip(target_input)
+
+    if not target_ip:
+        return JsonResponse(
+            {'error': 'Invalid domain or IP. Unable to resolve.'},
+            status=400
+        )
 
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
-    # If user not paid and has used 3 scans => require payment
-    if (not profile.has_paid) and profile.scan_count >= 3:
-        return JsonResponse({'error':'Free scan limit reached. Payment required to continue.', 'payment_required': True}, status=403)
+#----------------- Free plan limit 3 scans----------
+    
+    # if (not profile.has_paid) and profile.scan_count >= 3:
+    #     return JsonResponse({
+    #         'error': 'Free scan limit reached. Payment required to continue.',
+    #         'payment_required': True
+    #     }, status=403)
+#----------------- Free plan limit 3 scans----------
 
+    # Create scan task
     unique_task = str(uuid.uuid4())
-    scan = ScanTask.objects.create(task_id=unique_task, target=target, port_range=ports, status='PENDING')
+    scan = ScanTask.objects.create(
+        task_id=unique_task,
+        target=target_ip,        # Save resolved IP
+        port_range=ports,
+        status='PENDING'
+    )
+
     async_result = run_scan.delay(scan.id)
 
-    # increment only when we successfully queued scan
+    # Increase count only after scan queued
     profile.scan_count += 1
     profile.save()
 
-    return JsonResponse({'scan_db_id': scan.id, 'task_uuid': unique_task, 'celery_id': async_result.id})
+    return JsonResponse({
+        'scan_db_id': scan.id,
+        'task_uuid': unique_task,
+        'celery_id': async_result.id
+    })
+
+
 
 def scan_status(request, scan_id):
     scan = get_object_or_404(ScanTask, pk=scan_id)
@@ -69,6 +108,7 @@ def scan_status(request, scan_id):
         'start_time': scan.start_time,
         'end_time': scan.end_time
     })
+    
 def export_csv(request, scan_id):
     scan = get_object_or_404(ScanTask, pk=scan_id)
     results = scan.scanresult_set.all().order_by('port')
@@ -89,11 +129,6 @@ def home(request):
     return render(request, 'scanner/home.html')
 
 
-
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.shortcuts import render, redirect
-
 def register_user(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -104,12 +139,10 @@ def register_user(request):
             messages.error(request, "Username and password required.")
             return redirect('register')
 
-        # ✅ Check username in User model (not UserProfile)
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken.")
             return redirect('register')
 
-        # ✅ Create user using User model (not UserProfile)
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
 
@@ -142,7 +175,7 @@ def logout_user(request):
 def make_payment(request):
     """Create Razorpay order and render payment page."""
     client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET))
-    amount_rupees = 49  # set amount here
+    amount_rupees = 49  
     amount_paise = int(amount_rupees * 100)
     razor_order = client.order.create({'amount': amount_paise, 'currency': 'INR', 'payment_capture': 1})
     payment = PaymentRecord.objects.create(user=request.user, razorpay_order_id=razor_order['id'], amount=amount_rupees)

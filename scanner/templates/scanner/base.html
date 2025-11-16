@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <title>
-      {% block title %}Web IP & Port Scanner | CyberTool{% endblock %}
+      {% block title %}SPIDER — Scan & Port Inspection{% endblock %}
     </title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
@@ -53,7 +53,12 @@
         letter-spacing: 1px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        cursor: pointer;
+      }
+
+      header h1:hover {
+        color: #00d4a3;
       }
 
       nav {
@@ -106,7 +111,10 @@
          HEADER SECTION
     =========================== -->
     <header>
-      <h1><i class="fas fa-terminal"></i> CyberTool Scanner</h1>
+      <h1 title="Scan & Port Inspection: Discovery & Exploitation Report">
+        <i class="fa-solid fa-spider"></i> SPIDER
+      </h1>
+
       <nav>
         <a
           href="{% url 'home' %}"
@@ -123,7 +131,6 @@
         </a>
 
         {% if request.user.is_authenticated %}
-        <!-- ✅ Show only when user is logged in -->
         <a
           href="{% url 'make_payment' %}"
           class="{% if request.resolver_match.url_name == 'make_payment' %}active{% endif %}"
@@ -131,7 +138,7 @@
           <i class="fas fa-credit-card"></i> Payment
         </a>
 
-        <a href="{% url 'logout' %}" class="logout-btn">
+        <a href="{% url 'logout' %}">
           <i class="fas fa-sign-out-alt"></i> Logout
         </a>
         {% else %}
@@ -149,7 +156,6 @@
           <i class="fas fa-right-to-bracket"></i> Login
         </a>
         {% endif %}
-
       </nav>
     </header>
 
@@ -158,7 +164,7 @@
     =========================== -->
     {% block content %}
     <main style="padding: 40px; text-align: center">
-      <h2 style="color: #00ffc6">Welcome to CyberTool</h2>
+      <h2 style="color: #00ffc6">Welcome to SPIDER</h2>
       <p style="color: #ccc">
         Use the navigation above to explore all sections.
       </p>
@@ -169,10 +175,8 @@
          FOOTER
     =========================== -->
     <footer>
-      © 2025 CyberTool Scanner. Built with Django & Celery.
-      <small
-        >Note: Scanning is subject to rate-limits and usage policies.</small
-      >
+      © 2025 SPIDER — Scan & Port Inspection: Discovery & Exploitation Report  
+      <small>Security scanning subject to legal usage policies.</small>
     </footer>
 
     {% block extra_scripts %}{% endblock %}

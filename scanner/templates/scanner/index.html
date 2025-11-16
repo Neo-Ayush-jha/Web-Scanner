@@ -183,7 +183,7 @@
 
   <div id="messageArea"></div>
 
-  <label for="target">Target (IP or Domain)</label>
+  <label for="target">Target (IP or Domain name)</label>
   <input
     id="target"
     placeholder="example.com or 45.33.32.156"
@@ -318,9 +318,9 @@
 
         if (j.results && j.results.length > 0) {
           let html = `
-                <p style="color: #ccc; font-size: 0.9em; margin-bottom: 5px;">Results for **${
+                <p style="color: #ccc; font-size: 0.9em; margin-bottom: 5px;">Results for ${
                   j.target || "Target"
-                }**:</p>
+                }:</p>
                 <div style="max-height: 400px; overflow-y: auto;"> <table>
                     <thead>
                       <tr>
