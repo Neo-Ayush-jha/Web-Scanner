@@ -1,140 +1,144 @@
 {% extends "scanner/base.html" %}
-{% block title %}Home — CyberTool Scanner{% endblock %}
+{% block title %}Home — SPIDER{% endblock %}
 
 {% block head_style %}
 {{ block.super }}
 <style>
-  /* ===========================
-     HERO SECTION (Original Design)
-  =========================== */
-  .hero {
-    height: 90vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
-      url("https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?auto=format&fit=crop&w=1920&q=80")
+
+    /* Hero Section Matching New UI */
+    .hero-section {
+        min-height: 75vh;
+        background: linear-gradient(
+            rgba(0, 0, 0, 0.75),
+            rgba(0, 0, 0, 0.85)
+        ), 
+        url("https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?auto=format&fit=crop&w=1920&q=80")
         center/cover no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 20px;
-  }
 
-  .hero h2 {
-    font-size: 2.8rem;
-    color: #00ffc6;
-    margin-bottom: 10px;
-  }
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        text-align: center;
+        border-radius: 12px;
+        box-shadow: 0 0 25px rgba(0,255,199,0.08);
+    }
 
-  .hero p {
-    font-size: 1.1rem;
-    color: #eee;
-    max-width: 600px;
-    margin-bottom: 30px;
-  }
+    .hero-section h2 {
+        font-size: 3rem;
+        color: var(--neon);
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
 
-  .hero button {
-    background: #00ffc6;
-    color: #000;
-    font-weight: 600;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
+    .hero-section p {
+        color: var(--text);
+        font-size: 1.1rem;
+        max-width: 650px;
+        line-height: 1.6;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
 
-  .hero button:hover {
-    background: #00d4a3;
-    transform: scale(1.05);
-  }
+    .hero-section button {
+        background: var(--neon);
+        color: #000;
+        padding: 12px 35px;
+        font-weight: 600;
+        border-radius: 30px;
+        transition: 0.3s;
+        font-size: 1rem;
+    }
 
-  /* ===========================
-     FEATURES SECTION
-  =========================== */
-  .features {
-    padding: 60px 20px;
-    text-align: center;
-    background: #111;
-  }
+    .hero-section button:hover {
+        background: var(--neon2);
+        transform: scale(1.07);
+        box-shadow: 0 0 15px var(--neon2);
+    }
 
-  .features h3 {
-    color: #00ffc6;
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-  }
+    /* Features Section */
+    .features-section {
+        margin-top: 50px;
+        padding: 20px;
+    }
 
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+    .features-section h3 {
+        color: var(--neon);
+        text-align: center;
+        font-size: 2rem;
+        font-family: 'Orbitron', sans-serif;
+        margin-bottom: 30px;
+    }
 
-  .feature {
-    background: #1a1a1a;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 255, 198, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+    .feature-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.09);
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 0 8px rgba(0,255,199,0.06);
+    }
 
-  .feature:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(0, 255, 198, 0.15);
-  }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(0,255,199,0.18);
+    }
 
-  .feature h4 {
-    color: #00ffc6;
-    margin-bottom: 10px;
-  }
+    .feature-card h4 {
+        color: var(--neon2);
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
 </style>
 {% endblock %}
 
-{% block content %}
-<section class="hero">
-  <h2>Scan. Detect. Secure.</h2>
-  <p>
-    A powerful and easy-to-use web-based IP and Port Scanner that helps you
-    analyze network security instantly.
-  </p>
-  <button onclick="window.location.href='{% url 'scanner' %}'">
-    Start Scanning
-  </button>
-</section>
 
-<section class="features" id="features">
-  <h3>Key Features</h3>
-  <div class="feature-grid">
-    <div class="feature">
-      <h4>⚡ Fast Scanning</h4>
-      <p>
-        Uses async background tasks (Celery) to perform lightning-fast scans
-        on multiple ports.
-      </p>
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="hero-section">
+    <h2>Scan. Detect. Secure.</h2>
+    <p>
+        A powerful cyber-security toolkit that includes Port Scanning, 
+        Web Vulnerability Scanning, Report Generation & Real-time Monitoring.
+    </p>
+
+    <button onclick="window.location.href='{% url 'scanner' %}'">
+        Start Scanning
+    </button>
+</div>
+
+
+<!-- FEATURES SECTION -->
+<div class="features-section">
+    <h3>Key Features</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div class="feature-card">
+            <h4>⚡ Fast Port Scanning</h4>
+            <p>Async scanning for rapid port enumeration using optimized background tasks.</p>
+        </div>
+
+        <div class="feature-card">
+            <h4>🛡 Full Web Vulnerability Scan</h4>
+            <p>SQLi, XSS, Headers, Misconfig — industry-standard security checks.</p>
+        </div>
+
+        <div class="feature-card">
+            <h4>📊 Real-time Progress</h4>
+            <p>Live scan updates with automatic refresh for accuracy and speed.</p>
+        </div>
+
+        <div class="feature-card">
+            <h4>📁 PDF / CSV Reports</h4>
+            <p>Generate professional security reports for audits and compliance.</p>
+        </div>
+
     </div>
-    <div class="feature">
-      <h4>📊 Real-Time Status</h4>
-      <p>
-        See scan progress and port results update automatically in real
-        time.
-      </p>
-    </div>
-    <div class="feature">
-      <h4>📁 Export Reports</h4>
-      <p>
-        Export your scan results as CSV for offline analysis or record
-        keeping.
-      </p>
-    </div>
-    <div class="feature">
-      <h4>🔒 Safe & Secure</h4>
-      <p>
-        All operations are handled on your server — no external data
-        sharing.
-      </p>
-    </div>
-  </div>
-</section>
+</div>
+
 {% endblock %}

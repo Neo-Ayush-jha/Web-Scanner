@@ -6,96 +6,62 @@
     <title>
       {% block title %}SPIDER — Scan & Port Inspection{% endblock %}
     </title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Fonts & Icons -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Global Theme -->
     <style>
-      /* ===========================
-         GLOBAL STYLES
-      =========================== */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      :root {
+        --bg: #0d1117;
+        --panel: #0a0f1c;
+        --text: #e5e7eb;
+        --neon: #00ffc6;
+        --neon2: #00d4a3;
       }
-
       body {
+        background: var(--bg);
+        color: var(--text);
         font-family: "Poppins", sans-serif;
-        background: #0a0a0a;
-        color: #f5f5f5;
-        line-height: 1.6;
       }
-
-      /* ===========================
-         HEADER NAVIGATION
-      =========================== */
-      header {
-        padding: 20px 50px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #111;
-        border-bottom: 1px solid #222;
+      .glass {
+        background: rgba(13, 17, 23, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
       }
-
-      header h1 {
-        font-size: 1.6rem;
-        color: #00ffc6;
+      .neon-text {
+        color: var(--neon);
+      }
+      .hover-glow:hover {
+        box-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+      }
+      .brand {
+        font-family: "Orbitron", sans-serif;
         letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
       }
-
-      header h1:hover {
-        color: #00d4a3;
-      }
-
-      nav {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-      }
-
-      nav a {
-        color: #ccc;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.3s ease;
-      }
-
-      nav a:hover {
-        color: #00ffc6;
-      }
-
-      nav a.active {
-        color: #00ffc6;
-        border-bottom: 2px solid #00ffc6;
-        padding-bottom: 2px;
-      }
-
-      /* ===========================
-         FOOTER
-      =========================== */
       footer {
-        background: #0d0d0d;
+        background: rgba(13, 17, 23, 0.55);
         text-align: center;
         padding: 20px;
         border-top: 1px solid #222;
         color: #888;
         font-size: 0.9rem;
       }
-
       footer small {
         display: block;
         color: #666;
@@ -106,84 +72,174 @@
     {% block head_style %}{% endblock %}
   </head>
 
-  <body>
-    <!-- ===========================
-         HEADER SECTION
-    =========================== -->
-    <header>
-      <h1 title="Scan & Port Inspection: Discovery & Exploitation Report">
-        <i class="fa-solid fa-spider"></i> SPIDER
-      </h1>
+  <body class="min-h-screen">
+    {% if request.user.is_authenticated %}
+    <div class="flex">
+      {% endif %}
 
-      <nav>
-        <a
-          href="{% url 'home' %}"
-          class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+      <!-- ======================================
+         SIDEBAR (Visible only when logged in)
+    ======================================= -->
+      {% if request.user.is_authenticated %}
+      <aside class="w-64 min-h-screen glass p-5">
+        <div class="text-3xl brand neon-text mb-6 flex items-center gap-3">
+          <i class="fa-solid fa-spider"></i> SPIDER
+        </div>
+
+        <nav class="space-y-2 text-sm">
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'home' %}bg-slate-900{% endif %}"
+            href="{% url 'home' %}"
+          >
+            <i class="fa fa-home mr-2"></i> Home
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'scanner' %}bg-slate-900{% endif %}"
+            href="{% url 'scanner' %}"
+          >
+            <i class="fa fa-bolt mr-2"></i> Port Scanner
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_dashboard' %}bg-slate-900{% endif %}"
+            href="{% url 'web_dashboard' %}"
+          >
+            <i class="fa fa-shield-alt mr-2"></i> Web Scan Dashboard
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_targets' %}bg-slate-900{% endif %}"
+            href="{% url 'web_targets' %}"
+          >
+            <i class="fa fa-crosshairs mr-2"></i> Targets
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_scans' %}bg-slate-900{% endif %}"
+            href="{% url 'web_scans' %}"
+          >
+            <i class="fa fa-list mr-2"></i> Scan History
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_results' %}bg-slate-900{% endif %}"
+            href="{% url 'web_results' %}"
+          >
+            <i class="fa fa-bug mr-2"></i> Vulnerabilities
+          </a>
+        </nav>
+
+        <div class="mt-8 text-xs opacity-75">
+          <button id="themeToggle" class="px-3 py-2 border rounded hover-glow">
+            <i class="fa fa-adjust"></i> Toggle Theme
+          </button>
+        </div>
+      </aside>
+      {% endif %}
+
+      <!-- ======================================
+         MAIN CONTENT AREA
+    ======================================= -->
+      <main class="flex-1">
+        <!-- Top Header -->
+        <header
+          class="flex items-center justify-between p-4 border-b border-slate-800 glass"
         >
-          <i class="fas fa-home"></i> Home
-        </a>
+          {% if request.user.is_authenticated %}
+          <h1 class="text-xl brand neon-text">
+            Scan & Port Inspection: Discovery & Exploitation Report
+          </h1>
+          {% else %}
+          <div
+            class="text-3xl brand neon-text mb-6 flex items-center gap-3"
+            title="SPIDER - Scan & Port Inspection: Discovery & Exploitation Report"
+          >
+            <i class="fa-solid fa-spider"></i> SPIDER
+          </div>
 
-        <a
-          href="{% url 'scanner' %}"
-          class="{% if request.resolver_match.url_name == 'scanner' %}active{% endif %}"
-        >
-          <i class="fas fa-bolt"></i> Scanner
-        </a>
+          {% endif %}
+          <nav class="text-sm flex items-center gap-4">
+            {% if request.user.is_authenticated %}
+            <span class="opacity-80">{{ request.user.username }}</span>
+            <a
+              href="{% url 'logout' %}"
+              class="px-3 py-2 border rounded hover-glow"
+            >
+              <i class="fa fa-sign-out-alt"></i> Logout
+            </a>
+            {% else %}
+            <a
+              href="{% url 'login' %}"
+              class="px-3 py-2 border rounded hover-glow"
+            >
+              <i class="fa fa-sign-in-alt"></i> Login
+            </a>
+            <a
+              href="{% url 'register' %}"
+              class="px-3 py-2 border rounded hover-glow"
+            >
+              <i class="fa fa-user-plus"></i> Register
+            </a>
+            {% endif %}
+          </nav>
+        </header>
 
-        {% if request.user.is_authenticated %}
-        <a
-          href="{% url 'web_dashboard' %}"
-          class="{% if request.resolver_match.url_name == 'make_payment' %}active{% endif %}"
-        >
-          <i class="fas fa-shield-alt"></i> Web Scan
-        </a>
-        <a
-          href="{% url 'make_payment' %}"
-          class="{% if request.resolver_match.url_name == 'make_payment' %}active{% endif %}"
-        >
-          <i class="fas fa-credit-card"></i> Payment
-        </a>
+        <!-- Page Body -->
+        <section class="">
+          {% if messages %}
+          <div class="space-y-2 mb-4">
+            {% for message in messages %}
+            <div
+              class="border glass {% if message.tags == 'success' %}border-emerald-400{% else %}border-rose-400{% endif %}"
+            >
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %} {% block page_wrapper %}
+          <div class="w-full flex justify-center">
+            <div class="glass shadow-lg w-full">
+              {% block content %}{% endblock %}
+            </div>
+          </div>
+          {% endblock %}
+        </section>
 
-        <a href="{% url 'logout' %}">
-          <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
-        {% else %}
-        <a
-          href="{% url 'register' %}"
-          class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}"
-        >
-          <i class="fas fa-user-plus"></i> Register
-        </a>
+        <!-- Footer -->
+        <footer>
+          © 2025 SPIDER — Scan & Port Inspection: Discovery & Exploitation
+          Report
+          <small>Security scanning subject to legal usage policies.</small>
+        </footer>
+      </main>
 
-        <a
-          href="{% url 'login' %}"
-          class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}"
-        >
-          <i class="fas fa-right-to-bracket"></i> Login
-        </a>
-        {% endif %}
-      </nav>
-    </header>
+      {% if request.user.is_authenticated %}
+    </div>
+    {% endif %}
 
-    <!-- ===========================
-         PAGE CONTENT BLOCK
-    =========================== -->
-    {% block content %}
-    <main style="padding: 40px; text-align: center">
-      <h2 style="color: #00ffc6">Welcome to SPIDER</h2>
-      <p style="color: #ccc">
-        Use the navigation above to explore all sections.
-      </p>
-    </main>
-    {% endblock %}
+    <!-- Theme Toggle Script -->
+    <script>
+      const toggle = document.getElementById("themeToggle");
+      if (toggle) {
+        toggle.addEventListener("click", () => {
+          const root = document.documentElement;
+          const currentDark =
+            getComputedStyle(root).getPropertyValue("--bg").trim() ===
+            "#0d1117";
 
-    <!-- ===========================
-         FOOTER
-    =========================== -->
-    <footer>
-      © 2025 SPIDER — Scan & Port Inspection: Discovery & Exploitation Report  
-      <small>Security scanning subject to legal usage policies.</small>
-    </footer>
+          if (currentDark) {
+            root.style.setProperty("--bg", "#f7fafc");
+            root.style.setProperty("--panel", "#ffffff");
+            root.style.setProperty("--text", "#0d1117");
+          } else {
+            root.style.setProperty("--bg", "#0d1117");
+            root.style.setProperty("--panel", "#0a0f1c");
+            root.style.setProperty("--text", "#e5e7eb");
+          }
+        });
+      }
+    </script>
 
     {% block extra_scripts %}{% endblock %}
   </body>

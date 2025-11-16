@@ -7,7 +7,7 @@
   main.scanner {
     max-width: 820px;
     margin: 60px auto;
-    background: #111;
+    background: rgba(13, 17, 23, 0.55);
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 0 25px rgba(0, 255, 198, 0.08);
@@ -178,39 +178,47 @@
   }
 </style>
 {% endblock %} {% block content %}
-<main class="scanner">
-  <h2>Port & Service Enumeration</h2>
+<main class="scanner mx-auto  w-full max-w-3xl glass  rounded-xl shadow-lg">
+
+  <h2 class="text-center brand text-2xl neon-text mb-6">
+    Port & Service Enumeration
+  </h2>
 
   <div id="messageArea"></div>
 
-  <label for="target">Target (IP or Domain name)</label>
-  <input
-    id="target"
-    placeholder="example.com or 45.33.32.156"
-    autocomplete="off"
-  />
+  <label for="target" class="block text-slate-300 font-semibold my-4">
+    Target (IP or Domain name)
+  </label>
+  <input id="target"
+         class="w-full px-4 py-3 rounded bg-black/40 border border-slate-700 focus:border-emerald-400"
+         placeholder="example.com or 45.33.32.156" />
 
-  <label for="ports">Ports (Range or Comma-separated)</label>
-  <input
-    id="ports"
-    placeholder="1-1024 or 22,80,443,1433"
-    value="1-1024"
-    autocomplete="off"
-  />
+  <label for="ports" class="block text-slate-300 font-semibold my-4">
+    Ports (Range or Comma-separated)
+  </label>
+  <input id="ports"
+         class="w-full px-4 py-3 rounded bg-black/40 border border-slate-700 focus:border-emerald-400"
+         placeholder="1-1024 or 22,80,443"
+         value="1-1024" />
 
-  <button id="startBtn"><i class="fas fa-rocket"></i> Start Scan</button>
+  <button id="startBtn"
+          class="mt-6 w-full px-6 py-3 bg-emerald-400 text-black font-semibold rounded hover:bg-emerald-300 transition">
+    <i class="fas fa-rocket"></i> Start Scan
+  </button>
 
-  <div id="statusArea">
-    <h3>
-      <i class="fas fa-network-wired"></i> Scan Status:
-      <span id="scanStatus">Waiting...</span>
-      <span class="loading-dots">...</span>
-    </h3>
-    <div id="resultArea"></div>
-    <button id="downloadBtn">
-      <i class="fas fa-download"></i> Download CSV
-    </button>
+  <div id="statusArea" class="hidden mt-8 p-5 bg-black/40 border border-slate-700 rounded-lg">
+      <h3 class="text-slate-200 text-lg font-semibold mb-3">
+        Scan Status: <span id="scanStatus" class="text-emerald-400 font-bold"></span>
+        <span class="loading-dots">...</span>
+      </h3>
+      <div id="resultArea"></div>
+
+      <button id="downloadBtn"
+              class="hidden mt-5 px-5 py-2 bg-emerald-400 text-black rounded hover:bg-emerald-300">
+        <i class="fas fa-download"></i> Download CSV
+      </button>
   </div>
+
 </main>
 {% endblock %} {% block extra_scripts %}
 <script>

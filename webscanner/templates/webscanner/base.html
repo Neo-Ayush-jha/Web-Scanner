@@ -1,109 +1,207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Project Sentinel (SPIDER)</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Roboto+Mono:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>
+      {% block title %}SPIDER — Scan & Port Inspection{% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Global Theme -->
     <style>
-        :root { --bg:#0d1117; --panel:#0a0f1c; --neon:#00ffcc; --neon2:#1abc9c; --text:#e5e7eb; }
-        body { background: var(--bg); color: var(--text); font-family: 'Roboto Mono', monospace; }
-        .neon { text-shadow: 0 0 6px var(--neon), 0 0 12px var(--neon2); }
-        .glass { background: rgba(13,17,23,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
-        .hover-glow:hover { box-shadow: 0 0 20px 2px rgba(0,255,204,0.25); transition: box-shadow .3s ease; }
-        .brand { font-family:'Orbitron', sans-serif; letter-spacing:1px }
+      :root {
+        --bg: #0d1117;
+        --panel: #0a0f1c;
+        --text: #e5e7eb;
+        --neon: #00ffc6;
+        --neon2: #00d4a3;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Poppins", sans-serif;
+      }
+      .glass {
+        background: rgba(13, 17, 23, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+      }
+      .neon-text {
+        color: var(--neon);
+      }
+      .hover-glow:hover {
+        box-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+      }
+      .brand {
+        font-family: "Orbitron", sans-serif;
+        letter-spacing: 1px;
+      }
+      footer {
+        background: rgba(13, 17, 23, 0.55);
+        text-align: center;
+        padding: 20px;
+        border-top: 1px solid #222;
+        color: #888;
+        font-size: 0.9rem;
+      }
+      footer small {
+        display: block;
+        color: #666;
+        margin-top: 5px;
+      }
     </style>
-    
-</head>
+  </head>
 
-<body class="min-h-screen">
-<div class="flex min-h-screen">
+  <body class="min-h-screen">
+    <div class="flex min-h-screen">
+      <!-- SIDEBAR -->
+      <aside class="w-64 p-4 glass">
+        <div class="text-3xl brand neon-text mb-6 flex items-center gap-3">
+          <i class="fa-solid fa-spider"></i> SPIDER
+        </div>
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 p-4 glass">
-        <div class="text-2xl brand neon mb-6">SPIDER</div>
+        <nav class="space-y-2 text-sm">
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'home' %}bg-slate-900{% endif %}"
+            href="{% url 'home' %}"
+          >
+            <i class="fa fa-home mr-2"></i> Home
+          </a>
 
-        <nav class="space-y-2">
-            <a class="block px-3 py-2 rounded hover-glow" href="{% url 'home' %}">Dashboard</a>
-            <a class="block px-3 py-2 rounded hover-glow" href="{% url 'web_targets' %}">Targets</a>
-            <a class="block px-3 py-2 rounded hover-glow" href="{% url 'scanner' %}">Port Scans</a>
-            <a class="block px-3 py-2 rounded hover-glow" href="{% url 'web_scans' %}">Scans</a>
-            <a class="block px-3 py-2 rounded hover-glow" href="{% url 'web_results' %}">Results</a>
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'scanner' %}bg-slate-900{% endif %}"
+            href="{% url 'scanner' %}"
+          >
+            <i class="fa fa-bolt mr-2"></i> Port Scanner
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_dashboard' %}bg-slate-900{% endif %}"
+            href="{% url 'web_dashboard' %}"
+          >
+            <i class="fa fa-shield-alt mr-2"></i> Web Scan Dashboard
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_targets' %}bg-slate-900{% endif %}"
+            href="{% url 'web_targets' %}"
+          >
+            <i class="fa fa-crosshairs mr-2"></i> Targets
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_scans' %}bg-slate-900{% endif %}"
+            href="{% url 'web_scans' %}"
+          >
+            <i class="fa fa-list mr-2"></i> Scan History
+          </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_results' %}bg-slate-900{% endif %}"
+            href="{% url 'web_results' %}"
+          >
+            <i class="fa fa-bug mr-2"></i> Vulnerabilities
+          </a>
         </nav>
 
         <div class="mt-8 text-sm opacity-70">
-            <button id="themeToggle" class="px-3 py-2 border rounded">Toggle Theme</button>
+          <button id="themeToggle" class="px-3 py-2 border rounded">
+            Toggle Theme
+          </button>
         </div>
-    </aside>
+      </aside>
 
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-1">
-
-        <header class="flex items-center justify-between p-4 border-b border-slate-800">
-            <h1 class="text-xl brand">Project Sentinel</h1>
-
-            <div>
-                {% if request.user.is_authenticated %}
-                    <span class="mr-3">{{ request.user.username }}</span>
-                    <a class="px-3 py-2 border rounded" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                    <a class="px-3 py-2 border rounded" href="{% url 'login' %}">Login</a>
-                {% endif %}
-            </div>
+      <!-- MAIN CONTENT -->
+      <main class="flex-1">
+        <header
+          class="flex items-center justify-between p-4 border-b border-slate-800"
+        >
+          <h1 class="text-xl brand neon-text">
+            Scan & Port Inspection: Discovery & Exploitation Report
+          </h1>
+          <div>
+            {% if request.user.is_authenticated %}
+            <span class="mr-3">{{ request.user.username }}</span>
+            <a class="px-3 py-2 border rounded" href="{% url 'logout' %}"
+              >Logout</a
+            >
+            {% else %}
+            <a class="px-3 py-2 border rounded" href="{% url 'login' %}"
+              >Login</a
+            >
+            {% endif %}
+          </div>
         </header>
 
         <section class="p-6">
-
-            {% if messages %}
-            <div class="space-y-2 mb-4">
-                {% for message in messages %}
-                    <div class="p-3 rounded border 
-                        {% if message.tags == 'success' %}
-                            border-emerald-400
-                        {% else %}
-                            border-rose-400
-                        {% endif %}
-                    ">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+          {% if messages %}
+          <div class="space-y-2 mb-4">
+            {% for message in messages %}
+            <div
+              class="p-3 rounded border {% if message.tags == 'success' %} border-emerald-400 {% else %} border-rose-400 {% endif %}"
+            >
+              {{ message }}
             </div>
-            {% endif %}
-
-            {% block content %}{% endblock %}
-
+            {% endfor %}
+          </div>
+          {% endif %} {% block content %}{% endblock %}
         </section>
+        <footer>
+          © 2025 SPIDER — Scan & Port Inspection: Discovery & Exploitation
+          Report
+          <small>Security scanning subject to legal usage policies.</small>
+        </footer>
+      </main>
+    </div>
 
-    </main>
-</div>
-
-<!-- Theme toggle -->
-<script>
-    const toggle = document.getElementById('themeToggle');
-    if (toggle) {
-        toggle.addEventListener('click', () => {
-            const root = document.documentElement;
-            const dark = getComputedStyle(root).getPropertyValue('--bg').trim() === '#0d1117';
-            if (dark) {
-                root.style.setProperty('--bg', '#f7fafc');
-                root.style.setProperty('--panel', '#ffffff');
-                root.style.setProperty('--text', '#111827');
-            } else {
-                root.style.setProperty('--bg', '#0d1117');
-                root.style.setProperty('--panel', '#0a0f1c');
-                root.style.setProperty('--text', '#e5e7eb');
-            }
-        })
-    }
-</script>
-
-</body>
+    <!-- Theme toggle -->
+    <script>
+      const toggle = document.getElementById("themeToggle");
+      if (toggle) {
+        toggle.addEventListener("click", () => {
+          const root = document.documentElement;
+          const dark =
+            getComputedStyle(root).getPropertyValue("--bg").trim() ===
+            "#0d1117";
+          if (dark) {
+            root.style.setProperty("--bg", "#f7fafc");
+            root.style.setProperty("--panel", "#ffffff");
+            root.style.setProperty("--text", "#111827");
+          } else {
+            root.style.setProperty("--bg", "#0d1117");
+            root.style.setProperty("--panel", "#0a0f1c");
+            root.style.setProperty("--text", "#e5e7eb");
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
