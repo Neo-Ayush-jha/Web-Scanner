@@ -15,6 +15,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -39,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'scanner',
+    # 'scanner.apps.ScannerConfig',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +146,16 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
+
+
+LOGIN_URL = '/login/'
+
+
+GEMINI_API_KEY = "AIzaSyDbtsmJZjtUiXbIMxi9bPUcRghOw4DRpLk"
+
+
+# Razorpay keys (use environment variables in production)
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_RaveCVMev35dpb')
+RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET', '4P68oHGlURW80bzgqvOPAaTG')
+# optional webhook secret if using webhooks
+RAZORPAY_WEBHOOK_SECRET = os.environ.get('RAZORPAY_WEBHOOK_SECRET', '')

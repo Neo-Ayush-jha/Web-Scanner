@@ -1,0 +1,91 @@
+{% extends "scanner/base.html" %}
+{% block title %}Upgrade — CyberTool Scanner{% endblock %}
+
+{% block head_style %}
+{{ block.super }}
+<style>
+  .payment-container {
+    max-width: 480px;
+    margin: 80px auto;
+    background: #111;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0, 255, 198, 0.08);
+  }
+
+  .payment-container h2 {
+    color: #00ffc6;
+    margin-bottom: 20px;
+  }
+
+  .payment-container p {
+    color: #ccc;
+    margin-bottom: 30px;
+  }
+
+  .payment-container button {
+    background: #00ffc6;
+    border: none;
+    border-radius: 30px;
+    color: #000;
+    font-weight: 600;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .payment-container button:hover {
+    background: #00d4a3;
+    transform: scale(1.05);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+  <h2><i class="fas fa-crown"></i> Upgrade — ₹49</h2>
+  <p>Free scans exhausted. Pay ₹49 to unlock unlimited scans.</p>
+  <button id="rzp-button1"><i class="fas fa-credit-card"></i> Pay Now</button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+const options = {
+  key: "{{ key_id }}",
+  amount: "{{ order.amount }}",
+  currency: "INR",
+  name: "CyberTool Scanner",
+  description: "Premium Plan",
+  order_id: "{{ order.id }}",
+  handler: function (response) {
+    fetch("{% url 'verify_payment' %}", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_signature: response.razorpay_signature
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert("✅ Payment successful! You can scan now.");
+          window.location.href = "{% url 'scanner' %}";
+        } else {
+          alert("❌ Payment failed: " + (data.reason || data.error || "Unknown"));
+        }
+      });
+  },
+  theme: {color: "#00ffc6"}
+};
+const rzp = new Razorpay(options);
+document.getElementById("rzp-button1").onclick = function (e) {
+  rzp.open();
+  e.preventDefault();
+};
+</script>
+{% endblock %}
