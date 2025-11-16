@@ -156,7 +156,7 @@ GEMINI_API_KEY = "AIzaSyDbtsmJZjtUiXbIMxi9bPUcRghOw4DRpLk"
 
 
 # Razorpay keys (use environment variables in production)
-RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_RaveCVMev35dpb')
-RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET', '4P68oHGlURW80bzgqvOPAaTG')
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
+RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET')
 # optional webhook secret if using webhooks
 RAZORPAY_WEBHOOK_SECRET = os.environ.get('RAZORPAY_WEBHOOK_SECRET', '')
