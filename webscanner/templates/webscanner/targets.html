@@ -1,95 +1,129 @@
-{% extends 'webscanner/base.html' %}
-{% block content %}
+{% extends 'webscanner/base.html' %} {% block content %}
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <!-- Add Target -->
+  <div class="glass p-4 rounded">
+    <h2 class="brand mb-3">Add Target</h2>
 
-    <!-- Add Target -->
-    <div class="glass p-4 rounded">
-        <h2 class="brand mb-3">Add Target</h2>
+    <form method="post" class="space-y-3">
+      {% csrf_token %}
 
-        <form method="post" class="space-y-3">
-            {% csrf_token %}
+      <div>
+        <label class="block mb-1">Name</label>
+        <input
+          name="name"
+          class="w-full px-3 py-2 bg-transparent border rounded"
+          required
+        />
+      </div>
 
-            <div>
-                <label class="block mb-1">Name</label>
-                <input name="name" class="w-full px-3 py-2 bg-transparent border rounded" required>
-            </div>
+      <div>
+        <label class="block mb-1">URL</label>
+        <input
+          name="url"
+          class="w-full px-3 py-2 bg-transparent border rounded"
+          placeholder="https://example.com"
+          required
+        />
+      </div>
 
-            <div>
-                <label class="block mb-1">URL</label>
-                <input name="url" class="w-full px-3 py-2 bg-transparent border rounded"
-                       placeholder="https://example.com" required>
-            </div>
+      <button class="px-4 py-2 border rounded hover-glow" type="submit">
+        Add
+      </button>
+    </form>
+  </div>
 
-            <button class="px-4 py-2 border rounded hover-glow" type="submit">
-                Add
-            </button>
-        </form>
+  <!-- Target List -->
+  <div class="glass p-4 rounded">
+    <h2 class="brand mb-3">Targets</h2>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left">
+            <th class="py-2">Name</th>
+            <th>URL</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for t in targets %}
+          <tr class="border-t border-slate-800">
+            <td class="py-2">{{ t.name|truncatechars:16 }}</td>
+            <td>{{ t.url|truncatechars:30 }}</td>
+
+            <td class="space-x-2">
+              <!-- Start Scan -->
+              <form
+                method="post"
+                action="{% url 'web_start_scan' t.id %}"
+                class="inline"
+              >
+                {% csrf_token %}
+                <select
+                  name="scan_type"
+                  class="px-2 py-1 bg-transparent border rounded text-sm"
+                >
+                  <option class="bg-transparent text-black" value="Quick Scan">
+                    Quick Scan
+                  </option>
+                  <option class="bg-transparent text-black" value="Full Scan">
+                    Full Scan
+                  </option>
+                  <option
+                    class="bg-transparent text-black"
+                    value="SQL Injection Only"
+                  >
+                    SQL Injection Only
+                  </option>
+                  <option class="bg-transparent text-black" value="XSS Only">
+                    XSS Only
+                  </option>
+                  <option
+                    class="bg-transparent text-black"
+                    value="Headers Only"
+                  >
+                    Headers Only
+                  </option>
+                  <option class="bg-transparent text-black" value="Passive">
+                    Passive
+                  </option>
+                  <option class="bg-transparent text-black" value="Active">
+                    Active
+                  </option>
+                </select>
+
+                <button
+                  class="px-2 py-1 border rounded hover-glow"
+                  type="submit"
+                >
+                  Scan
+                </button>
+              </form>
+
+              <!-- Delete Target -->
+              <form
+                method="post"
+                action="{% url 'delete_target' t.id %}"
+                class="inline"
+                onsubmit="return confirm('Delete target?')"
+              >
+                {% csrf_token %}
+                <button
+                  class="px-2 py-1 border rounded hover-glow"
+                  type="submit"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-
-    <!-- Target List -->
-    <div class="glass p-4 rounded">
-        <h2 class="brand mb-3">Targets</h2>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="text-left">
-                        <th class="py-2">Name</th>
-                        <th>URL</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for t in targets %}
-                    <tr class="border-t border-slate-800">
-                        <td class="py-2">{{ t.name }}</td>
-                        <td>{{ t.url }}</td>
-
-                        <td class="space-x-2">
-
-                            <!-- Start Scan -->
-                            <form method="post" action="{% url 'web_start_scan' t.id %}" class="inline">
-                                {% csrf_token %}
-                                <select name="scan_type"
-                                        class="px-2 py-1 bg-transparent border rounded text-sm">
-
-                                    <option value="Quick Scan">Quick Scan</option>
-                                    <option value="Full Scan">Full Scan</option>
-                                    <option value="SQL Injection Only">SQL Injection Only</option>
-                                    <option value="XSS Only">XSS Only</option>
-                                    <option value="Headers Only">Headers Only</option>
-                                    <option value="Passive">Passive</option>
-                                    <option value="Active">Active</option>
-
-                                </select>
-
-                                <button class="px-2 py-1 border rounded hover-glow" type="submit">
-                                    Scan
-                                </button>
-                            </form>
-
-                            <!-- Delete Target -->
-                            <form method="post" action="{% url 'delete_target' t.id %}"
-                                  class="inline"
-                                  onsubmit="return confirm('Delete target?')">
-                                {% csrf_token %}
-                                <button class="px-2 py-1 border rounded hover-glow" type="submit">
-                                    Delete
-                                </button>
-                            </form>
-
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-
-            </table>
-        </div>
-
-    </div>
-
+  </div>
 </div>
 
 {% endblock %}

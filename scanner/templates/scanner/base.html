@@ -128,6 +128,13 @@
           >
             <i class="fa fa-bug mr-2"></i> Vulnerabilities
           </a>
+
+          <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_results' %}bg-slate-900{% endif %}"
+            href="{% url 'make_payment' %}"
+          >
+            <i class="fas fa-credit-card mr-2"></i> Payment
+          </a>
         </nav>
 
         <div class="mt-8 text-xs opacity-75">
