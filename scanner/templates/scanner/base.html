@@ -95,18 +95,20 @@
           </a>
 
           <a
+            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_dashboard' %}bg-slate-900{% endif %}"
+            href="{% url 'web_dashboard' %}"
+          >
+            <i class="fa fa-shield-alt mr-2"></i> Web Scan Dashboard
+          </a>
+
+
+          <a
             class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'scanner' %}bg-slate-900{% endif %}"
             href="{% url 'scanner' %}"
           >
             <i class="fa fa-bolt mr-2"></i> Port Scanner
           </a>
 
-          <a
-            class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_dashboard' %}bg-slate-900{% endif %}"
-            href="{% url 'web_dashboard' %}"
-          >
-            <i class="fa fa-shield-alt mr-2"></i> Web Scan Dashboard
-          </a>
 
           <a
             class="block px-3 py-2 rounded hover-glow {% if request.resolver_match.url_name == 'web_targets' %}bg-slate-900{% endif %}"
