@@ -53,18 +53,46 @@ def check_headers(scan, target):
     except Exception as e:
         append_log(scan, f"Header check failed: {e}")
 
+def get_dynamic_severity(score):
+    if score >= 90:
+        return "Critical"
+    elif score >= 60:
+        return "High"
+    elif score >= 30:
+        return "Medium"
+    else:
+        return "Low"
+
 
 def simulate_sqli(scan, target):
+    score = 0
+
+    url_lc = target.url.lower()
+
+    if "login" in url_lc or "auth" in url_lc:
+        score += 30
+
+    if "id=" in url_lc or "user" in url_lc:
+        score += 20
+
+    if "test" in url_lc or "search" in url_lc:
+        score += 20
+
+    score += 40  
+    
+    severity = get_dynamic_severity(score)
+
     Vulnerability.objects.create(
         scan=scan,
-        vtype='SQL Injection',
-        severity='High',
+        vtype="SQL Injection",
+        severity=severity,
         url=target.url,
-        parameter='q',
-        evidence="Simulated SQLi detection",
-        remediation="Use parameterized queries."
+        parameter="q",
+        evidence=f"SQLi probability score: {score}%",
+        remediation="Use parameterized queries & strict input validation."
     )
-    append_log(scan, "Potential SQLi found")
+
+    append_log(scan, f"SQL Injection detected (Severity: {severity})")
 
 
 def simulate_xss(scan, target):
