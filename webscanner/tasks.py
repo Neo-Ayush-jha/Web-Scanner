@@ -58,7 +58,7 @@ def simulate_sqli(scan, target):
     Vulnerability.objects.create(
         scan=scan,
         vtype='SQL Injection',
-        severity='High',
+        severity='Medium',
         url=target.url,
         parameter='q',
         evidence="Simulated SQLi detection",
