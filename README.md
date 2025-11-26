@@ -184,7 +184,10 @@ Feel free to open issues or submit pull requests for improvements or new feature
 ## 🔗 Connect With Me
 
 **Portfolio:** https://ayush-jha.netlify.app/
+
 **GitHub:** https://github.com/Neo-Ayush-jha
+
 **Project Link:** https://github.com/Neo-Ayush-jha/SPIDER
 
+**YouTube Link:** https://youtu.be/wBlLiQVkLn0?si=XepJexdrswGysb7h
 ---
